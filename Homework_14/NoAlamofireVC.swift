@@ -18,6 +18,7 @@ class NoAlamofireVC: UIViewController {
   @IBOutlet weak var humidityLabel: UILabel!
   @IBOutlet weak var windSpeedLabel: UILabel!
   @IBOutlet weak var weatherDescriptionLabel: UILabel!
+  @IBOutlet weak var tableViewOutlet: WeatherTableView!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -83,6 +84,7 @@ class NoAlamofireVC: UIViewController {
     
     guard let urlDaily = URL(string: "https://api.openweathermap.org/data/2.5/onecall?lat=59.937500&lon=30.308611&exclude=current,minutely,hourly,alerts&units=metric&lang=ru&appid=dc38330af7832da70e101cc8b4c7e914") else { return }
     
+    
     let sessionDaily  = URLSession.shared
     sessionDaily.dataTask(with: urlDaily) { (data, response, error) in
       
@@ -97,6 +99,11 @@ class NoAlamofireVC: UIViewController {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     
         self.jsonDailyData = try decoder.decode(DailyWeather.self, from: data)
+        
+        
+        DispatchQueue.main.async {
+          self.tableViewOutlet.reloadData()
+        }
         
       } catch {
         
